@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>MCU Watch Order Checklist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap');
+
+  :root{
+    --bg: #131313;
+    --panel: #1c1c1c;
+    --paper: #f3ede0;
+    --red: #d21f2f;
+    --red-dark: #8f1420;
+    --gold: #e8b13a;
+    --ink: #1b1b1b;
+    --muted: #7a7568;
+    --line: #d9d0b8;
+  }
+  *{ box-sizing: border-box; }
+  body{
+    margin:0;
+    background: radial-gradient(circle at 20% 10%, #232323, var(--bg) 60%);
+    font-family: 'Rubik', sans-serif;
+    color: var(--ink);
+    min-height:100vh;
+    padding: 16px 10px 40px;
+    overflow-x: hidden;
+  }
+  .wrap{ max-width: 760px; margin: 0 auto; }
+
+  .hero{
+    position: relative;
+    background: var(--red);
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.14) 1.4px, transparent 1.5px);
+    background-size: 10px 10px;
+    border: 3px solid #000;
+    border-radius: 6px;
+    padding: 22px 20px 26px;
+    box-shadow: 0 6px 0 #000, 0 6px 18px rgba(0,0,0,0.5);
+    overflow: hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(115deg, rgba(255,255,255,0.16), transparent 40%);
+  }
+  .eyebrow{
+    font-family:'Bangers', cursive;
+    letter-spacing: 2px;
+    color: var(--gold);
+    font-size: 15px;
+    margin: 0 0 4px;
+    text-shadow: 1px 1px 0 #000;
+  }
+  h1{
+    font-family:'Bangers', cursive;
+    font-size: 40px;
+    line-height: 1;
+    letter-spacing: 1px;
+    color: #fff;
+    margin: 0 0 14px;
+    text-shadow: 2px 2px 0 #000, -1px -1px 0 #000;
+  }
+  .stats{
+    display:flex; gap: 10px; flex-wrap: wrap;
+  }
+  .stat{
+    background: rgba(0,0,0,0.35);
+    border: 2px solid #000;
+    border-radius: 4px;
+    padding: 8px 14px;
+    color: #fff;
+    min-width: 92px;
+  }
+  .stat .n{ font-family:'Bangers', cursive; font-size: 22px; color: var(--gold); display:block; line-height:1;}
+  .stat .l{ font-size: 10.5px; letter-spacing: .5px; text-transform: uppercase; color: #f1e3c6; }
+
+  .bar-track{
+    margin-top: 14px;
+    height: 14px;
+    background: rgba(0,0,0,0.4);
+    border: 2px solid #000;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .bar-fill{
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), #fff2c9);
+    width: 0%;
+    transition: width .4s ease;
+  }
+
+  .controls{
+    display:flex; gap:8px; margin: 16px 0 6px; flex-wrap: wrap;
+  }
+  .tab{
+    font-family:'Bangers', cursive;
+    letter-spacing: 1px;
+    font-size: 15px;
+    background: var(--panel);
+    color: #d8d3c4;
+    border: 2px solid #000;
+    border-radius: 4px;
+    padding: 7px 16px;
+    cursor: pointer;
+  }
+  .tab.active{ background: var(--gold); color: #1b1200; }
+  .reset-btn{
+    margin-left:auto;
+    font-family:'Rubik', sans-serif;
+    font-size: 12.5px;
+    background: transparent;
+    color: #9a9689;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 7px 12px;
+    cursor: pointer;
+  }
+  .reset-btn:hover{ color: #fff; border-color:#888; }
+
+  .saga{
+    background: var(--paper);
+    border: 3px solid #000;
+    border-radius: 6px;
+    margin-top: 14px;
+    box-shadow: 0 6px 0 #000, 0 6px 16px rgba(0,0,0,0.45);
+    overflow: hidden;
+  }
+  .saga-head{
+    background: var(--ink);
+    color: var(--gold);
+    font-family: 'Bangers', cursive;
+    letter-spacing: 1.5px;
+    font-size: 19px;
+    padding: 10px 16px;
+    display:flex; justify-content: space-between; align-items:center;
+    border-bottom: 3px solid #000;
+  }
+  .saga-head span.count{ font-family:'Rubik'; font-size: 12px; color: #c9c3ad; }
+
+  ul.list{ list-style:none; margin:0; padding: 6px 0; }
+  li.item{
+    display:flex; align-items:flex-start; gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--line);
+    cursor:pointer;
+    user-select:none;
+  }
+  li.item:last-child{ border-bottom:none; }
+  li.item:hover{ background: #ece2c9; }
+
+  .box{
+    flex: 0 0 22px;
+    width: 22px; height: 22px;
+    border: 2.5px solid var(--ink);
+    border-radius: 3px;
+    background: #fff;
+    display:flex; align-items:center; justify-content:center;
+    margin-top: 1px;
+  }
+  .box svg{ width:16px; height:16px; opacity:0; transform: scale(0.6); transition: all .12s ease; }
+  li.item.done .box{ background: var(--red); border-color: var(--red-dark); }
+  li.item.done .box svg{ opacity:1; transform: scale(1); }
+  li.item.done .title{ text-decoration: line-through; color: var(--muted); }
+
+  .title{ font-size: 15px; font-weight: 500; line-height:1.35; flex:1; }
+  .year{ color: var(--muted); font-weight: 400; }
+  .dur{
+    flex: 0 0 auto;
+    font-size: 11.5px;
+    color: var(--red-dark);
+    background: #e9dfc3;
+    border: 1px solid #c9bd93;
+    border-radius: 10px;
+    padding: 2px 9px;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  li.item.done .dur{ color: var(--muted); background: #ded4b8; border-color: #c9bd93; }
+
+  .saga-badge{
+    flex: 0 0 auto;
+    font-size: 10px;
+    letter-spacing: .3px;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 3px 7px;
+    border-radius: 3px;
+    margin-top: 3px;
+    color: #fff;
+    background: var(--red-dark);
+  }
+  .saga-badge.multiverse{ background: #4a4738; }
+
+  footer{
+    text-align:center; color:#6a6a6a; font-size:11.5px; margin-top:24px;
+  }
+
+  .sync-panel{
+    background: var(--panel);
+    border: 2px solid #000;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-top: 12px;
+  }
+  .sync-row{
+    display:flex; align-items:center; gap:8px; flex-wrap: wrap;
+  }
+  .sync-row + .sync-row{ margin-top: 8px; }
+  .sync-label{ font-size: 12px; color: #c9c3ad; }
+  .sync-label.on{ color: var(--gold); }
+  .sync-input{
+    font-family: 'Rubik', sans-serif;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: 1.5px solid #444;
+    background: #101010;
+    color: #f1ecd9;
+    flex: 1 1 120px;
+    min-width: 0;
+  }
+  .sync-btn{
+    font-family: 'Rubik', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 4px;
+    border: 1.5px solid var(--gold);
+    background: var(--gold);
+    color: #1b1200;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .sync-btn.ghost{
+    background: transparent;
+    color: #c9a45a;
+    border-color: #6a552a;
+  }
+
+  .export-btn{
+    font-family: 'Bangers', cursive;
+    letter-spacing: 1px;
+    font-size: 15px;
+    background: var(--ink);
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    border-radius: 4px;
+    padding: 8px 18px;
+    cursor: pointer;
+    width: 100%;
+  }
+  .export-btn:disabled{ opacity: 0.6; cursor: default; }
+
+  .modal-overlay{
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: modalFadeIn .15s ease;
+  }
+  @keyframes modalFadeIn{ from{ opacity: 0; } to{ opacity: 1; } }
+  .modal-box{
+    width: 100%; max-width: 360px;
+    background: var(--paper);
+    border: 3px solid #000;
+    border-radius: 6px;
+    box-shadow: 0 8px 0 #000, 0 8px 20px rgba(0,0,0,0.55);
+    overflow: hidden;
+    animation: modalPopIn .18s cubic-bezier(.2,.9,.3,1.2);
+  }
+  @keyframes modalPopIn{ from{ transform: scale(0.92); opacity: 0; } to{ transform: scale(1); opacity: 1; } }
+  .modal-header{
+    background: var(--red);
+    background-image: radial-gradient(circle, rgba(255,255,255,0.14) 1.4px, transparent 1.5px);
+    background-size: 10px 10px;
+    border-bottom: 3px solid #000;
+    padding: 14px 18px;
+    font-family: 'Bangers', cursive;
+    letter-spacing: 1px;
+    font-size: 20px;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000, -1px -1px 0 #000;
+  }
+  .modal-body{
+    padding: 16px 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .modal-actions{
+    display: flex; justify-content: flex-end; gap: 8px;
+    padding: 0 18px 18px;
+  }
+  .modal-btn{
+    font-family: 'Rubik', sans-serif;
+    font-weight: 500;
+    font-size: 13px;
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: 2px solid #000;
+    background: var(--gold);
+    color: #1b1200;
+    cursor: pointer;
+  }
+  .modal-btn.ghost{
+    background: transparent;
+    color: var(--muted);
+    border-color: #b8ac86;
+  }
+
+  @media (max-width:480px){
+    body{ padding: 12px 8px 32px; }
+    .hero{ padding: 16px 14px 20px; }
+    h1{ font-size: 26px; margin-bottom: 10px; }
+    .eyebrow{ font-size: 12.5px; }
+    .stats{ gap: 7px; }
+    .stat{ min-width: 0; flex: 1 1 30%; padding:6px 8px; text-align:center; }
+    .stat .n{ font-size: 18px; }
+    .stat .l{ font-size: 9px; }
+    .controls{ gap:6px; margin: 12px 0 6px; }
+    .tab{ font-size: 13px; padding: 6px 11px; }
+    .reset-btn{ font-size: 11px; padding: 6px 9px; }
+    .saga-head{ font-size: 16px; padding: 9px 12px; flex-wrap: wrap; gap: 4px; }
+    li.item{ padding: 9px 12px; flex-wrap: wrap; gap: 6px 8px; }
+    .title{ font-size: 14px; min-width: 0; }
+    .box{ margin-top: 0; }
+    .dur{ font-size: 10.5px; margin-left: 34px; }
+    .saga-badge{ font-size: 9px; margin-left: 34px; }
+  }
+
+  @media (max-width:360px){
+    h1{ font-size: 22px; }
+    .stat .n{ font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="hero">
+    <p class="eyebrow">Marvel cinematic universe</p>
+    <h1>Watch order checklist</h1>
+    <div class="stats">
+      <div class="stat"><span class="n" id="statDone">0</span><span class="l">watched</span></div>
+      <div class="stat"><span class="n" id="statLeft">0</span><span class="l">to go</span></div>
+      <div class="stat"><span class="n" id="statPct">0%</span><span class="l">complete</span></div>
+    </div>
+    <div class="stats" style="margin-top:8px;">
+      <div class="stat"><span class="n" id="hoursDone">0h</span><span class="l">watch time logged</span></div>
+      <div class="stat"><span class="n" id="hoursLeft">0h</span><span class="l">watch time left</span></div>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+  </div>
+
+  <div class="sync-panel" id="syncPanel">
+    <div class="sync-row">
+      <span class="sync-label" id="syncStatus">Not syncing &mdash; progress stays on this device only</span>
+    </div>
+    <div class="sync-row">
+      <input type="text" id="syncInput" class="sync-input" placeholder="Enter sync code" maxlength="12" autocomplete="off">
+      <button class="sync-btn" id="syncConnectBtn">Use this code</button>
+      <button class="sync-btn" id="syncGenerateBtn">Generate new code</button>
+      <button class="sync-btn ghost" id="syncStopBtn" style="display:none;">Stop syncing</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="tab active" data-tab="all">All</button>
+    <button class="tab" data-tab="infinity">Infinity saga</button>
+    <button class="tab" data-tab="multiverse">Multiverse saga</button>
+    <button class="reset-btn" id="resetBtn">Reset all</button>
+  </div>
+
+  <div class="controls" style="margin-top:0;">
+    <button class="tab order-tab active" data-order="chrono">Chronological order</button>
+    <button class="tab order-tab" data-order="release">Release date order</button>
+  </div>
+
+  <div class="controls" style="margin-top:0;">
+    <button class="export-btn" id="exportBtn">Download progress image (PNG)</button>
+  </div>
+
+  <div id="lists"></div>
+
+  <footer>Tap a title to mark it watched. Your progress is saved automatically. Series runtimes are approximate totals across all episodes.</footer>
+</div>
+
+<script>
+// runtime in minutes: movies = theatrical runtime, series = sum of all episodes
+// release: the title's rank in actual theatrical/premiere release order (1 = released first)
+const DATA = {
+  infinity: {
+    label: "The Infinity Saga",
+    items: [
+      ["Captain America: The First Avenger (2011)", 124, 5],
+      ["Captain Marvel (2019)", 123, 21],
+      ["Iron Man (2008)", 126, 1],
+      ["Iron Man 2 (2010)", 124, 3],
+      ["The Incredible Hulk (2008)", 112, 2],
+      ["Thor (2011)", 115, 4],
+      ["Avengers (2012)", 143, 6],
+      ["Thor: The Dark World (2013)", 112, 8],
+      ["Iron Man 3 (2013)", 130, 7],
+      ["Captain America: The Winter Soldier (2014)", 136, 9],
+      ["Guardians of the Galaxy (2014)", 121, 10],
+      ["Guardians of the Galaxy Vol. 2 (2017)", 136, 15],
+      ["I am Groot (2022-2023)", 25, 37],
+      ["Avengers: Age of Ultron (2015)", 141, 11],
+      ["Ant-Man (2015)", 117, 12],
+      ["Captain America: Civil War (2016)", 147, 13],
+      ["Black Widow (2021)", 134, 27],
+      ["Black Panther (2018)", 134, 18],
+      ["Spider-Man: Homecoming (2017)", 133, 16],
+      ["Doctor Strange (2016)", 115, 14],
+      ["Thor: Ragnarok (2017)", 130, 17],
+      ["Ant-Man and The Wasp (2018)", 118, 20],
+      ["Avengers: Infinity War (2018)", 149, 19],
+      ["Avengers: Endgame (2019)", 181, 22]
+    ]
+  },
+  multiverse: {
+    label: "The Multiverse Saga",
+    items: [
+      ["Loki (2021-2023)", 600, 26],
+      ["Spider-Man: Far From Home (2019)", 129, 23],
+      ["Spider-Man: No Way Home (2021)", 148, 32],
+      ["What if...? (2021-2024)", 910, 28],
+      ["WandaVision (2021)", 320, 24],
+      ["Shang-Chi and the Legend of the Ten Rings (2021)", 132, 29],
+      ["The Falcon and the Winter Soldier (2021)", 290, 25],
+      ["Eternals (2021)", 156, 30],
+      ["Doctor Strange in the Multiverse of Madness (2022)", 126, 34],
+      ["Hawkeye (2021)", 290, 31],
+      ["Moon Knight (2022)", 290, 33],
+      ["Black Panther: Wakanda Forever (2022)", 161, 40],
+      ["She-Hulk (2022)", 300, 38],
+      ["Ms. Marvel (2022)", 210, 35],
+      ["Thor: Love and Thunder (2022)", 119, 36],
+      ["Ironheart (2025)", 240, 50],
+      ["Werewolf by Night (2022)", 55, 39],
+      ["Guardians of the Galaxy: Holiday Special (2022)", 44, 41],
+      ["Ant-Man and The Wasp: Quantumania (2023)", 125, 42],
+      ["Guardians of the Galaxy Vol. 3 (2023)", 150, 43],
+      ["Secret Invasion (2023)", 200, 44],
+      ["The Marvels (2023)", 105, 45],
+      ["Deadpool & Wolverine (2024)", 128, 46],
+      ["Agatha All Along (2024)", 340, 47],
+      ["Captain America: Brave New World (2025)", 118, 48],
+      ["Thunderbolts* (2025)", 127, 49]
+    ]
+  }
+};
+
+const STORAGE_KEY = "mcu-checklist-progress";
+const SYNC_CODE_KEY = "mcu-checklist-sync-code";
+// Paste your Firebase Realtime Database URL here, e.g. "https://your-project-id-default-rtdb.firebaseio.com"
+const FIREBASE_DB_URL = "https://mcu-watchlist-58ea6-default-rtdb.europe-west1.firebasedatabase.app";
+
+let state = {};
+let currentTab = "all";
+let currentOrder = "chrono";
+let storageWarned = false;
+let hasCloudStorage = typeof window.storage !== 'undefined';
+let syncCode = localStorage.getItem(SYNC_CODE_KEY) || null;
+let syncConfigured = FIREBASE_DB_URL && !FIREBASE_DB_URL.startsWith("PASTE_");
+
+function slugify(s){ return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,''); }
+
+function showModal({ title, message, confirmLabel = 'OK', cancelLabel = null }){
+  return new Promise(resolve => {
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `
+      <div class="modal-box">
+        <div class="modal-header">${title}</div>
+        <div class="modal-body">${message}</div>
+        <div class="modal-actions">
+          ${cancelLabel ? `<button class="modal-btn ghost" data-action="cancel">${cancelLabel}</button>` : ''}
+          <button class="modal-btn" data-action="confirm">${confirmLabel}</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    function close(result){
+      overlay.remove();
+      resolve(result);
+    }
+
+    overlay.querySelector('[data-action="confirm"]').addEventListener('click', () => close(true));
+    const cancelBtn = overlay.querySelector('[data-action="cancel"]');
+    if(cancelBtn) cancelBtn.addEventListener('click', () => close(false));
+    overlay.addEventListener('click', e => { if(e.target === overlay) close(false); });
+    document.addEventListener('keydown', function onKey(e){
+      if(e.key === 'Escape'){ close(false); document.removeEventListener('keydown', onKey); }
+    });
+  });
+}
+
+function customAlert(title, message, okLabel = 'OK'){
+  return showModal({ title, message, confirmLabel: okLabel });
+}
+
+function customConfirm(title, message, confirmLabel = 'Confirm', cancelLabel = 'Cancel'){
+  return showModal({ title, message, confirmLabel, cancelLabel });
+}
+
+function genSyncCode(){
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // no ambiguous chars
+  let out = '';
+  for(let i = 0; i < 6; i++) out += chars[Math.floor(Math.random() * chars.length)];
+  return out;
+}
+
+async function fetchCloudState(code){
+  const res = await fetch(`${FIREBASE_DB_URL}/mcu-checklists/${code}.json`);
+  if(!res.ok) throw new Error('cloud fetch failed: ' + res.status);
+  return await res.json(); // null if nothing saved yet under this code
+}
+
+async function pushCloudState(code, data){
+  const res = await fetch(`${FIREBASE_DB_URL}/mcu-checklists/${code}.json`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  if(!res.ok) throw new Error('cloud push failed: ' + res.status);
+}
+
+async function loadState(){
+  if(syncConfigured && syncCode){
+    try{
+      const cloudData = await fetchCloudState(syncCode);
+      if(cloudData){
+        state = cloudData;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        return;
+      }
+      // nothing saved under this code yet: fall through and seed it from whatever's local
+    }catch(e){
+      showStorageWarning("Couldn't reach the sync server just now, so showing your last saved progress on this device instead.");
+    }
+  }
+  if(hasCloudStorage){
+    try{
+      const res = await window.storage.get(STORAGE_KEY);
+      state = res ? JSON.parse(res.value) : {};
+      return;
+    }catch(e){
+      // fall through to local storage below
+    }
+  }
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    state = raw ? JSON.parse(raw) : {};
+  }catch(e){
+    state = {};
+  }
+}
+
+function showStorageWarning(text){
+  if(storageWarned) return;
+  storageWarned = true;
+  const banner = document.createElement('div');
+  banner.textContent = text;
+  banner.style.cssText = "background:#3a2a12;color:#f0c98a;border:2px solid #000;border-radius:6px;padding:8px 12px;font-size:12.5px;margin-top:12px;";
+  document.querySelector('.hero').after(banner);
+}
+
+async function saveState(retries = 2){
+  // always keep a local cache so the app works offline / instantly on next load
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+
+  if(syncConfigured && syncCode){
+    for(let attempt = 0; attempt <= retries; attempt++){
+      try{
+        await pushCloudState(syncCode, state);
+        return;
+      }catch(e){
+        if(attempt < retries){
+          await new Promise(r => setTimeout(r, 300 * (attempt + 1)));
+        }else{
+          showStorageWarning("Couldn't sync to the cloud just now. Your changes are saved on this device and will sync next time it's reachable.");
+        }
+      }
+    }
+    return;
+  }
+
+  if(hasCloudStorage){
+    for(let attempt = 0; attempt <= retries; attempt++){
+      try{
+        await window.storage.set(STORAGE_KEY, JSON.stringify(state));
+        return;
+      }catch(e){
+        if(attempt < retries){
+          await new Promise(r => setTimeout(r, 300 * (attempt + 1)));
+        }
+      }
+    }
+    showStorageWarning("Saving to Claude's cloud storage isn't working right now, so progress is being kept in this browser instead. It'll persist here but won't follow you to another device.");
+  }
+}
+
+function checkSvg(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 18 20 6"></polyline></svg>';
+}
+
+function formatHours(minutes){
+  const h = minutes / 60;
+  if(h < 10) return (Math.round(h*10)/10) + 'h';
+  return Math.round(h) + 'h';
+}
+
+function render(){
+  const container = document.getElementById('lists');
+  container.innerHTML = '';
+
+  const sagasToShow = currentTab === 'all' ? ['infinity','multiverse'] : [currentTab];
+
+  let totalDone = 0, totalCount = 0;
+  let minutesDone = 0, minutesTotal = 0;
+
+  function rowHtml(sagaKey, item, mins, showBadge){
+    const id = sagaKey + ':' + slugify(item);
+    const isDone = !!state[id];
+    if(isDone) totalDone++;
+    totalCount++;
+    minutesTotal += mins;
+    if(isDone) minutesDone += mins;
+    const match = item.match(/^(.*)\s(\(.+\))$/);
+    const title = match ? match[1] : item;
+    const year = match ? match[2] : '';
+    const badge = showBadge
+      ? `<div class="saga-badge ${sagaKey}">${sagaKey === 'infinity' ? 'Infinity' : 'Multiverse'}</div>`
+      : '';
+    return `<li class="item ${isDone ? 'done':''}" data-id="${id}">
+        <div class="box">${checkSvg()}</div>
+        <div class="title">${title} <span class="year">${year}</span></div>
+        ${badge}
+        <div class="dur">${formatHours(mins)}</div>
+      </li>`;
+  }
+
+  if(currentOrder === 'chrono'){
+    sagasToShow.forEach(sagaKey => {
+      const saga = DATA[sagaKey];
+      const sagaEl = document.createElement('div');
+      sagaEl.className = 'saga';
+
+      let doneCount = 0, sagaMinDone = 0, sagaMinTotal = 0;
+      const listHtml = saga.items.map(([item, mins]) => {
+        const before = totalDone, beforeMin = minutesDone;
+        const html = rowHtml(sagaKey, item, mins, false);
+        if(totalDone > before) doneCount++;
+        sagaMinTotal += mins;
+        if(totalDone > before) sagaMinDone += mins;
+        return html;
+      }).join('');
+
+      sagaEl.innerHTML = `
+        <div class="saga-head">
+          <span>${saga.label}</span>
+          <span class="count">${doneCount} / ${saga.items.length} &middot; ${formatHours(sagaMinDone)} / ${formatHours(sagaMinTotal)}</span>
+        </div>
+        <ul class="list">${listHtml}</ul>
+      `;
+      container.appendChild(sagaEl);
+    });
+  }else{
+    // release date order: flatten across the selected saga(s) and sort by release rank
+    const flat = [];
+    sagasToShow.forEach(sagaKey => {
+      DATA[sagaKey].items.forEach(([item, mins, rel]) => {
+        flat.push({ sagaKey, item, mins, rel });
+      });
+    });
+    flat.sort((a, b) => a.rel - b.rel);
+
+    const showBadge = sagasToShow.length > 1;
+    const listHtml = flat.map(r => rowHtml(r.sagaKey, r.item, r.mins, showBadge)).join('');
+
+    const sagaEl = document.createElement('div');
+    sagaEl.className = 'saga';
+    sagaEl.innerHTML = `
+      <div class="saga-head">
+        <span>Release date order</span>
+        <span class="count">${totalDone} / ${totalCount} &middot; ${formatHours(minutesDone)} / ${formatHours(minutesTotal)}</span>
+      </div>
+      <ul class="list">${listHtml}</ul>
+    `;
+    container.appendChild(sagaEl);
+  }
+
+  document.getElementById('statDone').textContent = totalDone;
+  document.getElementById('statLeft').textContent = totalCount - totalDone;
+  const pct = totalCount ? Math.round((totalDone/totalCount)*100) : 0;
+  document.getElementById('statPct').textContent = pct + '%';
+  document.getElementById('barFill').style.width = pct + '%';
+  document.getElementById('hoursDone').textContent = formatHours(minutesDone);
+  document.getElementById('hoursLeft').textContent = formatHours(minutesTotal - minutesDone);
+
+  container.querySelectorAll('.item').forEach(li => {
+    li.addEventListener('click', () => {
+      const id = li.dataset.id;
+      state[id] = !state[id];
+      render();
+      saveState();
+    });
+  });
+}
+
+document.querySelectorAll('.tab[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab[data-tab]').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTab = btn.dataset.tab;
+    render();
+  });
+});
+
+document.querySelectorAll('.order-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.order-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentOrder = btn.dataset.order;
+    render();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', async () => {
+  const ok = await customConfirm(
+    'Reset all progress?',
+    'This clears every checked-off title on this device' + ((syncConfigured && syncCode) ? ', and updates your synced cloud copy too.' : '.'),
+    'Reset all',
+    'Cancel'
+  );
+  if(ok){
+    state = {};
+    await saveState();
+    render();
+  }
+});
+
+function updateSyncUI(){
+  const statusEl = document.getElementById('syncStatus');
+  const stopBtn = document.getElementById('syncStopBtn');
+  const input = document.getElementById('syncInput');
+
+  if(!syncConfigured){
+    statusEl.textContent = "Sync isn't set up on this page yet (needs a Firebase database URL).";
+    statusEl.classList.remove('on');
+    stopBtn.style.display = 'none';
+    return;
+  }
+  if(syncCode){
+    statusEl.textContent = `Syncing with code: ${syncCode} — enter this same code on your other devices`;
+    statusEl.classList.add('on');
+    stopBtn.style.display = '';
+    input.value = '';
+    input.placeholder = syncCode;
+  }else{
+    statusEl.textContent = "Not syncing — progress stays on this device only";
+    statusEl.classList.remove('on');
+    stopBtn.style.display = 'none';
+  }
+}
+
+async function connectWithCode(code){
+  code = code.trim().toUpperCase();
+  if(!code) return;
+  syncCode = code;
+  localStorage.setItem(SYNC_CODE_KEY, syncCode);
+  updateSyncUI();
+  try{
+    const cloudData = await fetchCloudState(syncCode);
+    if(cloudData){
+      state = cloudData;
+    }else{
+      // brand new code: seed the cloud with whatever's on this device right now
+      await pushCloudState(syncCode, state);
+    }
+    render();
+  }catch(e){
+    showStorageWarning("Couldn't reach the sync server to connect. Check the code and your connection, then try again.");
+  }
+}
+
+document.getElementById('syncConnectBtn').addEventListener('click', async () => {
+  if(!syncConfigured){
+    await customAlert('Sync not set up', 'This page needs a Firebase database URL added before syncing will work. See the setup instructions.');
+    return;
+  }
+  const val = document.getElementById('syncInput').value;
+  if(!val.trim()){
+    await customAlert('Enter a code', 'Type a code first, or use "Generate new code" to create one.');
+    return;
+  }
+  connectWithCode(val);
+});
+
+document.getElementById('syncGenerateBtn').addEventListener('click', async () => {
+  if(!syncConfigured){
+    await customAlert('Sync not set up', 'This page needs a Firebase database URL added before syncing will work. See the setup instructions.');
+    return;
+  }
+  connectWithCode(genSyncCode());
+});
+
+document.getElementById('syncStopBtn').addEventListener('click', async () => {
+  const ok = await customConfirm(
+    'Stop syncing?',
+    "This device keeps its current progress, but won't send or receive updates anymore.",
+    'Stop syncing',
+    'Cancel'
+  );
+  if(ok){
+    syncCode = null;
+    localStorage.removeItem(SYNC_CODE_KEY);
+    updateSyncUI();
+  }
+});
+
+// pull latest from the cloud whenever the tab regains focus, so changes made on another device show up
+document.addEventListener('visibilitychange', async () => {
+  if(document.visibilityState === 'visible' && syncConfigured && syncCode){
+    try{
+      const cloudData = await fetchCloudState(syncCode);
+      if(cloudData) { state = cloudData; render(); }
+    }catch(e){ /* stay on last known state if offline */ }
+  }
+});
+
+// ---------- PNG export ----------
+
+function truncateText(ctx, text, maxWidth){
+  if(ctx.measureText(text).width <= maxWidth) return text;
+  let t = text;
+  while(t.length > 1 && ctx.measureText(t + '\u2026').width > maxWidth){
+    t = t.slice(0, -1);
+  }
+  return t + '\u2026';
+}
+
+function currentSectionsForExport(){
+  const sagasToShow = currentTab === 'all' ? ['infinity','multiverse'] : [currentTab];
+  if(currentOrder === 'chrono'){
+    return sagasToShow.map(k => ({
+      label: DATA[k].label,
+      entries: DATA[k].items.map(([item, mins]) => ({ item, mins, sagaKey: k }))
+    }));
+  }
+  const flat = [];
+  sagasToShow.forEach(k => DATA[k].items.forEach(([item, mins, rel]) => flat.push({ item, mins, rel, sagaKey: k })));
+  flat.sort((a, b) => a.rel - b.rel);
+  return [{ label: 'Release date order', entries: flat }];
+}
+
+function rr(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  if(ctx.roundRect){ ctx.roundRect(x, y, w, h, r); }
+  else{
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+  }
+}
+
+async function generateProgressImage(){
+  const btn = document.getElementById('exportBtn');
+  btn.disabled = true;
+  const originalLabel = btn.textContent;
+  btn.textContent = 'Generating\u2026';
+
+  try{
+    if(document.fonts && document.fonts.ready) await document.fonts.ready;
+
+    const sections = currentSectionsForExport();
+    const sideBySide = sections.length > 1;
+
+    const W = sideBySide ? 1040 : 900;
+    const PAD = 26;
+    const midGap = 24;
+    const cols = sideBySide ? 3 : 4;
+    const cellGap = 7;
+    const cellH = 32;
+    const cellR = 2;
+    const sectionHeaderH = 26;
+    const sectionGap = 16;
+    const footerH = 30;
+
+    const blockW = sideBySide ? (W - PAD * 2 - midGap) / 2 : (W - PAD * 2);
+    const cellW = (blockW - cellGap * (cols - 1)) / cols;
+
+    const titleZoneH = 96;
+    const chipsH = 56;
+    const chipsGapAbove = 14;
+    const barH = 14;
+    const barGapAbove = 12;
+    const heroPadBottom = 18;
+    const heroH = titleZoneH + chipsGapAbove + chipsH + barGapAbove + barH + heroPadBottom;
+    const headerH = heroH + 20;
+
+    let totalDone = 0, totalCount = 0, minutesDone = 0, minutesTotal = 0;
+    const laidOut = sections.map(section => {
+      let doneCount = 0, sMinDone = 0, sMinTotal = 0;
+      const cards = section.entries.map(({ item, mins, sagaKey }) => {
+        const id = sagaKey + ':' + slugify(item);
+        const done = !!state[id];
+        totalCount++; minutesTotal += mins;
+        if(done){ totalDone++; minutesDone += mins; doneCount++; sMinDone += mins; }
+        sMinTotal += mins;
+        return { item, mins, done, sagaKey };
+      });
+      const rows = Math.ceil(cards.length / cols);
+      const sectionH = sectionHeaderH + rows * cellH + (rows - 1) * cellGap;
+      return { label: section.label, doneCount, total: cards.length, sMinDone, sMinTotal, cards, rows, sectionH };
+    });
+
+    const contentH = sideBySide
+      ? Math.max(laidOut[0].sectionH, laidOut[1].sectionH)
+      : laidOut.reduce((s, sec) => s + sec.sectionH, 0) + sectionGap * (laidOut.length - 1);
+    const totalH = headerH + contentH + footerH + PAD;
+    const pct = totalCount ? Math.round((totalDone / totalCount) * 100) : 0;
+
+    const scale = 2; // crisper output
+    const canvas = document.createElement('canvas');
+    canvas.width = W * scale;
+    canvas.height = totalH * scale;
+    const ctx = canvas.getContext('2d');
+    ctx.scale(scale, scale);
+
+    // background
+    const bgGrad = ctx.createRadialGradient(W * 0.2, 0, 0, W * 0.2, 0, totalH * 0.9);
+    bgGrad.addColorStop(0, '#262626');
+    bgGrad.addColorStop(1, '#121212');
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, totalH);
+
+    // ---- hero (red banner containing title + stats + bar, like the website) ----
+    ctx.save();
+    rr(ctx, 0, 0, W, heroH, 6);
+    ctx.clip();
+    const bannerGrad = ctx.createLinearGradient(0, 0, W, heroH);
+    bannerGrad.addColorStop(0, '#e0222f');
+    bannerGrad.addColorStop(1, '#a8161f');
+    ctx.fillStyle = bannerGrad;
+    ctx.fillRect(0, 0, W, heroH);
+    ctx.fillStyle = 'rgba(255,255,255,0.13)';
+    for(let dy = 6; dy < heroH; dy += 9){
+      for(let dx = (dy % 18 === 6 ? 6 : 11); dx < W; dx += 11){
+        ctx.beginPath();
+        ctx.arc(dx, dy, 1.1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    const sheen = ctx.createLinearGradient(0, 0, W * 0.5, heroH);
+    sheen.addColorStop(0, 'rgba(255,255,255,0.16)');
+    sheen.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = sheen;
+    ctx.fillRect(0, 0, W, heroH);
+    ctx.restore();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    rr(ctx, 1.5, 1.5, W - 3, heroH - 3, 6);
+    ctx.stroke();
+
+    ctx.font = '800 12px Rubik, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.75)';
+    ctx.fillText('MARVEL CINEMATIC UNIVERSE', PAD, 26);
+
+    ctx.lineJoin = 'round';
+    ctx.font = '38px Bangers, cursive';
+    ctx.strokeStyle = 'rgba(0,0,0,0.55)';
+    ctx.lineWidth = 5;
+    ctx.strokeText('My MCU Progress', PAD, 62);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('My MCU Progress', PAD, 62);
+
+    const viewLabel = (currentTab === 'all' ? 'All titles' : (currentTab === 'infinity' ? 'Infinity Saga' : 'Multiverse Saga'))
+      + ' \u00b7 ' + (currentOrder === 'chrono' ? 'Chronological order' : 'Release date order');
+    ctx.font = '600 11.5px Rubik, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fillText(viewLabel, PAD, 82);
+
+    // ---- stat chips (styled like the website's .stat boxes) ----
+    const chips = [
+      [`${totalDone}`, 'WATCHED'],
+      [`${totalCount - totalDone}`, 'TO GO'],
+      [`${pct}%`, 'COMPLETE'],
+      [formatHours(minutesDone), 'HRS LOGGED'],
+      [formatHours(minutesTotal - minutesDone), 'HRS LEFT']
+    ];
+    const chipY = titleZoneH + chipsGapAbove;
+    const chipW = (W - PAD * 2 - 8 * (chips.length - 1)) / chips.length;
+    chips.forEach((c, i) => {
+      const x = PAD + i * (chipW + 8);
+      rr(ctx, x, chipY, chipW, chipsH, 4);
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fill();
+      ctx.strokeStyle = '#000';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.font = '22px Bangers, cursive';
+      ctx.fillStyle = '#e8b13a';
+      ctx.fillText(c[0], x + 11, chipY + 30);
+      ctx.font = '700 8.5px Rubik, sans-serif';
+      ctx.fillStyle = '#f1e3c6';
+      ctx.fillText(c[1], x + 11, chipY + 44);
+    });
+
+    // ---- progress bar (styled like the website's .bar-track / .bar-fill) ----
+    const barY = chipY + chipsH + barGapAbove;
+    rr(ctx, PAD, barY, W - PAD * 2, barH, barH / 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.4)';
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    const barFillW = Math.max(barH, (W - PAD * 2) * (pct / 100));
+    const barGrad = ctx.createLinearGradient(PAD, 0, PAD + barFillW, 0);
+    barGrad.addColorStop(0, '#e8b13a');
+    barGrad.addColorStop(1, '#fff2c9');
+    rr(ctx, PAD, barY, barFillW, barH, barH / 2);
+    ctx.fillStyle = barGrad;
+    ctx.fill();
+
+    // ---- sections ----
+    function drawSection(section, x, yStart){
+      ctx.fillStyle = '#e8b13a';
+      ctx.font = '16px Bangers, cursive';
+      ctx.fillText(section.label, x, yStart + 17);
+      ctx.font = '600 10.5px Rubik, sans-serif';
+      ctx.fillStyle = '#8a8577';
+      const countText = `${section.doneCount}/${section.total}  \u00b7  ${formatHours(section.sMinDone)}/${formatHours(section.sMinTotal)}`;
+      const countW = ctx.measureText(countText).width;
+      ctx.fillText(countText, x + blockW - countW, yStart + 17);
+      const gridY = yStart + sectionHeaderH;
+
+      section.cards.forEach((card, i) => {
+        const col = i % cols;
+        const row = Math.floor(i / cols);
+        const cx = x + col * (cellW + cellGap);
+        const cy = gridY + row * (cellH + cellGap);
+        const accent = card.sagaKey === 'infinity' ? '#e0222f' : '#c9a13a';
+
+        ctx.save();
+        if(card.done){
+          ctx.shadowColor = 'rgba(0,0,0,0.35)';
+          ctx.shadowBlur = 5;
+          ctx.shadowOffsetY = 2;
+        }
+        rr(ctx, cx, cy, cellW, cellH, cellR);
+        ctx.fillStyle = card.done ? '#f3ede0' : '#1e1e1e';
+        ctx.fill();
+        ctx.restore();
+
+        rr(ctx, cx, cy, cellW, cellH, cellR);
+        ctx.strokeStyle = card.done ? '#c9bd93' : '#383838';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        ctx.save();
+        rr(ctx, cx, cy, cellW, cellH, cellR);
+        ctx.clip();
+        ctx.globalAlpha = card.done ? 1 : 0.5;
+        ctx.fillStyle = accent;
+        ctx.fillRect(cx, cy, 3, cellH);
+        ctx.restore();
+
+        const boxSize = 11;
+        const boxX = cx + 9, boxY = cy + (cellH - boxSize) / 2;
+        if(card.done){
+          rr(ctx, boxX, boxY, boxSize, boxSize, 2);
+          ctx.fillStyle = '#e0222f';
+          ctx.fill();
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.moveTo(boxX + 2.3, boxY + 6);
+          ctx.lineTo(boxX + 4.6, boxY + 8.7);
+          ctx.lineTo(boxX + 8.7, boxY + 2.8);
+          ctx.stroke();
+        }else{
+          rr(ctx, boxX, boxY, boxSize, boxSize, 2);
+          ctx.strokeStyle = '#5a5a5a';
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
+        }
+
+        const midY = cy + cellH / 2 + 3.5;
+        ctx.font = '400 8.5px Rubik, sans-serif';
+        const durText = formatHours(card.mins);
+        const durW = ctx.measureText(durText).width;
+        const durX = cx + cellW - 8 - durW;
+
+        const textX = boxX + boxSize + 6;
+        const textMaxW = durX - 6 - textX;
+        ctx.font = '600 9.5px Rubik, sans-serif';
+        ctx.fillStyle = card.done ? '#1b1b1b' : '#b8b3a4';
+        ctx.fillText(truncateText(ctx, card.item, textMaxW), textX, midY);
+
+        ctx.font = '400 8.5px Rubik, sans-serif';
+        ctx.fillStyle = card.done ? '#8a8577' : '#6a6a6a';
+        ctx.fillText(durText, durX, midY);
+      });
+    }
+
+    let y = headerH;
+    if(sideBySide){
+      drawSection(laidOut[0], PAD, y);
+      drawSection(laidOut[1], PAD + blockW + midGap, y);
+      y += contentH;
+    }else{
+      laidOut.forEach(section => {
+        drawSection(section, PAD, y);
+        y += section.sectionH + sectionGap;
+      });
+    }
+
+    // footer
+    ctx.fillStyle = '#5a5a5a';
+    ctx.font = '9.5px Rubik, sans-serif';
+    const dateStr = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+    ctx.fillText(`Generated ${dateStr}`, PAD, totalH - 10);
+
+    canvas.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `mcu-progress-${new Date().toISOString().slice(0,10)}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    }, 'image/png');
+  }catch(e){
+    await customAlert('Couldn\'t generate the image', 'Something went wrong creating the PNG. Please try again.');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = originalLabel;
+  }
+}
+
+document.getElementById('exportBtn').addEventListener('click', generateProgressImage);
+
+(async () => {
+  updateSyncUI();
+  await loadState();
+  render();
+})();
+</script>
+</body>
+</html>
