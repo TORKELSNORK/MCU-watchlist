@@ -1,64 +1,221 @@
-// runtime in minutes: movies = theatrical runtime, series = sum of all episodes
+// runtime in minutes: movies = theatrical runtime, series episodes = approximate per-episode length
 // release: the title's rank in actual theatrical/premiere release order (1 = released first)
+// type 'movie' entries: {type,title,mins,rel}
+// type 'series' entries: {type,title,rel,seasons:[{n:seasonNumber, eps:[{title,mins}, ...]}]}
 const DATA = {
   infinity: {
     label: "The Infinity Saga",
     items: [
-      ["Captain America: The First Avenger (2011)", 124, 5],
-      ["Captain Marvel (2019)", 123, 21],
-      ["Iron Man (2008)", 126, 1],
-      ["Iron Man 2 (2010)", 124, 3],
-      ["The Incredible Hulk (2008)", 112, 2],
-      ["Thor (2011)", 115, 4],
-      ["Avengers (2012)", 143, 6],
-      ["Thor: The Dark World (2013)", 112, 8],
-      ["Iron Man 3 (2013)", 130, 7],
-      ["Captain America: The Winter Soldier (2014)", 136, 9],
-      ["Guardians of the Galaxy (2014)", 121, 10],
-      ["Guardians of the Galaxy Vol. 2 (2017)", 136, 15],
-      ["I am Groot (2022-2023)", 25, 37],
-      ["Avengers: Age of Ultron (2015)", 141, 11],
-      ["Ant-Man (2015)", 117, 12],
-      ["Captain America: Civil War (2016)", 147, 13],
-      ["Black Widow (2021)", 134, 27],
-      ["Black Panther (2018)", 134, 18],
-      ["Spider-Man: Homecoming (2017)", 133, 16],
-      ["Doctor Strange (2016)", 115, 14],
-      ["Thor: Ragnarok (2017)", 130, 17],
-      ["Ant-Man and The Wasp (2018)", 118, 20],
-      ["Avengers: Infinity War (2018)", 149, 19],
-      ["Avengers: Endgame (2019)", 181, 22]
+      { type:"movie", title:"Captain America: The First Avenger (2011)", mins:124, rel:5 },
+      { type:"movie", title:"Captain Marvel (2019)", mins:123, rel:21 },
+      { type:"movie", title:"Iron Man (2008)", mins:126, rel:1 },
+      { type:"movie", title:"Iron Man 2 (2010)", mins:124, rel:3 },
+      { type:"movie", title:"The Incredible Hulk (2008)", mins:112, rel:2 },
+      { type:"movie", title:"Thor (2011)", mins:115, rel:4 },
+      { type:"movie", title:"Avengers (2012)", mins:143, rel:6 },
+      { type:"movie", title:"Thor: The Dark World (2013)", mins:112, rel:8 },
+      { type:"movie", title:"Iron Man 3 (2013)", mins:130, rel:7 },
+      { type:"movie", title:"Captain America: The Winter Soldier (2014)", mins:136, rel:9 },
+      { type:"movie", title:"Guardians of the Galaxy (2014)", mins:121, rel:10 },
+      { type:"movie", title:"Guardians of the Galaxy Vol. 2 (2017)", mins:136, rel:15 },
+      { type:"series", title:"I am Groot (2022-2023)", rel:37, seasons:[
+        { n:1, eps:[
+          { title:"Groot's First Steps", mins:4 },
+          { title:"The Little Guy", mins:4 },
+          { title:"Groot's Pursuit", mins:4 },
+          { title:"Groot Takes a Bath", mins:4 },
+          { title:"Magnum Opus", mins:4 }
+        ]},
+        { n:2, eps:[
+          { title:"Are You My Groot?", mins:4 },
+          { title:"Groot Noses Around", mins:4 },
+          { title:"Groot's Snow Day", mins:4 },
+          { title:"Groot's Sweet Treat", mins:4 },
+          { title:"Groot and the Great Prophecy", mins:4 }
+        ]}
+      ]},
+      { type:"movie", title:"Avengers: Age of Ultron (2015)", mins:141, rel:11 },
+      { type:"movie", title:"Ant-Man (2015)", mins:117, rel:12 },
+      { type:"movie", title:"Captain America: Civil War (2016)", mins:147, rel:13 },
+      { type:"movie", title:"Black Widow (2021)", mins:134, rel:27 },
+      { type:"movie", title:"Black Panther (2018)", mins:134, rel:18 },
+      { type:"movie", title:"Spider-Man: Homecoming (2017)", mins:133, rel:16 },
+      { type:"movie", title:"Doctor Strange (2016)", mins:115, rel:14 },
+      { type:"movie", title:"Thor: Ragnarok (2017)", mins:130, rel:17 },
+      { type:"movie", title:"Ant-Man and The Wasp (2018)", mins:118, rel:20 },
+      { type:"movie", title:"Avengers: Infinity War (2018)", mins:149, rel:19 },
+      { type:"movie", title:"Avengers: Endgame (2019)", mins:181, rel:22 }
     ]
   },
   multiverse: {
     label: "The Multiverse Saga",
     items: [
-      ["Loki (2021-2023)", 600, 26],
-      ["Spider-Man: Far From Home (2019)", 129, 23],
-      ["Spider-Man: No Way Home (2021)", 148, 32],
-      ["What if...? (2021-2024)", 910, 28],
-      ["WandaVision (2021)", 320, 24],
-      ["Shang-Chi and the Legend of the Ten Rings (2021)", 132, 29],
-      ["The Falcon and the Winter Soldier (2021)", 290, 25],
-      ["Eternals (2021)", 156, 30],
-      ["Doctor Strange in the Multiverse of Madness (2022)", 126, 34],
-      ["Hawkeye (2021)", 290, 31],
-      ["Moon Knight (2022)", 290, 33],
-      ["Black Panther: Wakanda Forever (2022)", 161, 40],
-      ["She-Hulk (2022)", 300, 38],
-      ["Ms. Marvel (2022)", 210, 35],
-      ["Thor: Love and Thunder (2022)", 119, 36],
-      ["Ironheart (2025)", 240, 50],
-      ["Werewolf by Night (2022)", 55, 39],
-      ["Guardians of the Galaxy: Holiday Special (2022)", 44, 41],
-      ["Ant-Man and The Wasp: Quantumania (2023)", 125, 42],
-      ["Guardians of the Galaxy Vol. 3 (2023)", 150, 43],
-      ["Secret Invasion (2023)", 200, 44],
-      ["The Marvels (2023)", 105, 45],
-      ["Deadpool & Wolverine (2024)", 128, 46],
-      ["Agatha All Along (2024)", 340, 47],
-      ["Captain America: Brave New World (2025)", 118, 48],
-      ["Thunderbolts* (2025)", 127, 49]
+      { type:"series", title:"Loki (2021-2023)", rel:26, seasons:[
+        { n:1, eps:[
+          { title:"Glorious Purpose", mins:50 },
+          { title:"The Variant", mins:50 },
+          { title:"Lamentis", mins:50 },
+          { title:"The Nexus Event", mins:50 },
+          { title:"Journey Into Mystery", mins:50 },
+          { title:"For All Time. Always.", mins:50 }
+        ]},
+        { n:2, eps:[
+          { title:"Ouroboros", mins:50 },
+          { title:"Breaking Brad", mins:50 },
+          { title:"1893", mins:50 },
+          { title:"Heart of the TVA", mins:50 },
+          { title:"Science/Fiction", mins:50 },
+          { title:"Glorious Purpose", mins:50 }
+        ]}
+      ]},
+      { type:"movie", title:"Spider-Man: Far From Home (2019)", mins:129, rel:23 },
+      { type:"movie", title:"Spider-Man: No Way Home (2021)", mins:148, rel:32 },
+      { type:"series", title:"What if...? (2021-2024)", rel:28, seasons:[
+        { n:1, eps:[
+          { title:"What If... Captain Carter Were the First Avenger?", mins:35 },
+          { title:"What If... T'Challa Became a Star-Lord?", mins:35 },
+          { title:"What If... The World Lost Its Mightiest Heroes?", mins:35 },
+          { title:"What If... Doctor Strange Lost His Heart Instead of His Hands?", mins:35 },
+          { title:"What If... Zombies!?", mins:35 },
+          { title:"What If... Killmonger Rescued Tony Stark?", mins:35 },
+          { title:"What If... Thor Were an Only Child?", mins:35 },
+          { title:"What If... Ultron Won?", mins:35 },
+          { title:"What If... The Watcher Broke His Oath?", mins:35 }
+        ]},
+        { n:2, eps:[
+          { title:"What If... Nebula Joined the Nova Corps?", mins:35 },
+          { title:"What If... Peter Quill Attacked Earth's Mightiest Heroes?", mins:35 },
+          { title:"What If... Happy Hogan Saved Christmas?", mins:35 },
+          { title:"What If... Iron Man Crashed Into the Grandmaster?", mins:35 },
+          { title:"What If... Captain Carter Fought the Hydra Stomper?", mins:35 },
+          { title:"What If... Kahhori Reshaped the World?", mins:35 },
+          { title:"What If... Hela Found the Ten Rings?", mins:35 },
+          { title:"What If... The Avengers Assembled in 1602?", mins:35 },
+          { title:"What If... Strange Supreme Intervened?", mins:35 }
+        ]},
+        { n:3, eps:[
+          { title:"What If... The Hulk Fought the Mech Avengers?", mins:35 },
+          { title:"What If... Agatha Went to Hollywood?", mins:35 },
+          { title:"What If... The Red Guardian Stopped the Winter Soldier?", mins:35 },
+          { title:"What If... Howard the Duck Got Hitched?", mins:35 },
+          { title:"What If... The Emergence Destroyed the Earth?", mins:35 },
+          { title:"What If... 1872?", mins:35 },
+          { title:"What If... The Watcher Disappeared?", mins:35 },
+          { title:"What If... What If...?", mins:35 }
+        ]}
+      ]},
+      { type:"series", title:"WandaVision (2021)", rel:24, seasons:[
+        { n:1, eps:[
+          { title:"Filmed Before a Live Studio Audience", mins:35 },
+          { title:"Don't Touch That Dial", mins:35 },
+          { title:"Now in Color", mins:35 },
+          { title:"We Interrupt This Program", mins:35 },
+          { title:"On a Very Special Episode...", mins:35 },
+          { title:"All-New Halloween Spooktacular!", mins:35 },
+          { title:"Breaking the Fourth Wall", mins:38 },
+          { title:"Previously On", mins:35 },
+          { title:"The Series Finale", mins:47 }
+        ]}
+      ]},
+      { type:"movie", title:"Shang-Chi and the Legend of the Ten Rings (2021)", mins:132, rel:29 },
+      { type:"series", title:"The Falcon and the Winter Soldier (2021)", rel:25, seasons:[
+        { n:1, eps:[
+          { title:"New World Order", mins:49 },
+          { title:"The Star-Spangled Man", mins:47 },
+          { title:"Power Broker", mins:53 },
+          { title:"The Whole World Is Watching", mins:51 },
+          { title:"Truth", mins:60 },
+          { title:"One World, One People", mins:50 }
+        ]}
+      ]},
+      { type:"movie", title:"Eternals (2021)", mins:156, rel:30 },
+      { type:"movie", title:"Doctor Strange in the Multiverse of Madness (2022)", mins:126, rel:34 },
+      { type:"series", title:"Hawkeye (2021)", rel:31, seasons:[
+        { n:1, eps:[
+          { title:"Never Meet Your Heroes", mins:47 },
+          { title:"Hide and Seek", mins:49 },
+          { title:"Echoes", mins:44 },
+          { title:"Partners, Am I Right?", mins:41 },
+          { title:"Ronin", mins:45 },
+          { title:"So This Is Christmas?", mins:56 }
+        ]}
+      ]},
+      { type:"series", title:"Moon Knight (2022)", rel:33, seasons:[
+        { n:1, eps:[
+          { title:"The Goldfish Problem", mins:45 },
+          { title:"Summon the Suit", mins:50 },
+          { title:"The Friendly Type", mins:50 },
+          { title:"The Tomb", mins:51 },
+          { title:"Asylum", mins:47 },
+          { title:"Gods and Monsters", mins:42 }
+        ]}
+      ]},
+      { type:"movie", title:"Black Panther: Wakanda Forever (2022)", mins:161, rel:40 },
+      { type:"series", title:"She-Hulk (2022)", rel:38, seasons:[
+        { n:1, eps:[
+          { title:"A Normal Amount of Rage", mins:34 },
+          { title:"Superhuman Law", mins:30 },
+          { title:"The People vs. Emil Blonsky", mins:32 },
+          { title:"Is This Not Real Magic?", mins:30 },
+          { title:"Mean, Green, and Straight Poured Into These Jeans", mins:31 },
+          { title:"Just Jen", mins:31 },
+          { title:"The Retreat", mins:35 },
+          { title:"Ribbit and Rip It", mins:33 },
+          { title:"Whose Show Is This?", mins:32 }
+        ]}
+      ]},
+      { type:"series", title:"Ms. Marvel (2022)", rel:35, seasons:[
+        { n:1, eps:[
+          { title:"Generation Why", mins:49 },
+          { title:"Crushed", mins:40 },
+          { title:"Destined", mins:40 },
+          { title:"Seeing Red", mins:40 },
+          { title:"Time and Again", mins:40 },
+          { title:"No Normal", mins:40 }
+        ]}
+      ]},
+      { type:"movie", title:"Thor: Love and Thunder (2022)", mins:119, rel:36 },
+      { type:"series", title:"Ironheart (2025)", rel:50, seasons:[
+        { n:1, eps:[
+          { title:"Take Me Home", mins:41 },
+          { title:"Will the Real Natalie Please Stand Up?", mins:40 },
+          { title:"We in Danger, Girl", mins:40 },
+          { title:"Bad Magic", mins:40 },
+          { title:"Karma's a Glitch", mins:40 },
+          { title:"The Past Is the Past", mins:39 }
+        ]}
+      ]},
+      { type:"movie", title:"Werewolf by Night (2022)", mins:55, rel:39 },
+      { type:"movie", title:"Guardians of the Galaxy: Holiday Special (2022)", mins:44, rel:41 },
+      { type:"movie", title:"Ant-Man and The Wasp: Quantumania (2023)", mins:125, rel:42 },
+      { type:"movie", title:"Guardians of the Galaxy Vol. 3 (2023)", mins:150, rel:43 },
+      { type:"series", title:"Secret Invasion (2023)", rel:44, seasons:[
+        { n:1, eps:[
+          { title:"Resurrection", mins:43 },
+          { title:"Promises", mins:43 },
+          { title:"Betrayed", mins:43 },
+          { title:"Beloved", mins:43 },
+          { title:"Harvest", mins:43 },
+          { title:"Home", mins:43 }
+        ]}
+      ]},
+      { type:"movie", title:"The Marvels (2023)", mins:105, rel:45 },
+      { type:"movie", title:"Deadpool & Wolverine (2024)", mins:128, rel:46 },
+      { type:"series", title:"Agatha All Along (2024)", rel:47, seasons:[
+        { n:1, eps:[
+          { title:"Seekest Thou the Road", mins:34 },
+          { title:"Circle Sewn with Fate / Unlock Thy Hidden Gate", mins:35 },
+          { title:"Through Many Miles / Of Tricks and Trials", mins:31 },
+          { title:"If I Can't Reach You / Let My Song Teach You", mins:35 },
+          { title:"Darkest Hour / Wake Thy Power", mins:41 },
+          { title:"Familiar by Thy Side", mins:41 },
+          { title:"Death's Hand in Mine", mins:41 },
+          { title:"Follow Me My Friend / To Glory at the End", mins:41 },
+          { title:"Maiden Mother Crone", mins:42 }
+        ]}
+      ]},
+      { type:"movie", title:"Captain America: Brave New World (2025)", mins:118, rel:48 },
+      { type:"movie", title:"Thunderbolts* (2025)", mins:127, rel:49 }
     ]
   }
 };
@@ -224,6 +381,50 @@ function formatHours(minutes){
   return Math.round(h) + 'h';
 }
 
+function episodeId(sagaKey, seriesTitle, seasonNum, epTitle){
+  return sagaKey + ':' + slugify(seriesTitle) + ':s' + seasonNum + ':' + slugify(epTitle);
+}
+
+// Normalizes a movie or series entry into a common shape for display/stats.
+// For series, "done" means every episode across every season is watched;
+// doneMins gives partial credit for whichever episodes are actually checked off.
+function entryInfo(sagaKey, entry){
+  if(entry.type === 'movie'){
+    const id = sagaKey + ':' + slugify(entry.title);
+    const done = !!state[id];
+    return { id, title: entry.title, mins: entry.mins, rel: entry.rel, done, doneMins: done ? entry.mins : 0, isSeries:false };
+  }
+  let totalMins = 0, doneMins = 0, totalEp = 0, doneEp = 0;
+  entry.seasons.forEach(season => {
+    season.eps.forEach(ep => {
+      totalMins += ep.mins; totalEp++;
+      if(state[episodeId(sagaKey, entry.title, season.n, ep.title)]){ doneMins += ep.mins; doneEp++; }
+    });
+  });
+  return {
+    id: sagaKey + ':' + slugify(entry.title),
+    title: entry.title, mins: totalMins, rel: entry.rel,
+    done: totalEp > 0 && doneEp === totalEp, doneMins, isSeries:true, totalEp, doneEp
+  };
+}
+
+const expandedSeries = new Set();
+const expandedSeasons = new Set();
+
+// Sets every episode of a series (optionally scoped to one season) to a given watched state.
+function setSeriesEpisodes(sagaKey, entry, setTo, onlySeasonNum){
+  entry.seasons.forEach(season => {
+    if(onlySeasonNum !== undefined && season.n !== onlySeasonNum) return;
+    season.eps.forEach(ep => {
+      state[episodeId(sagaKey, entry.title, season.n, ep.title)] = setTo;
+    });
+  });
+}
+
+function checkSvgSmall(){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 18 20 6"></polyline></svg>';
+}
+
 function render(){
   const container = document.getElementById('lists');
   container.innerHTML = '';
@@ -233,25 +434,71 @@ function render(){
   let totalDone = 0, totalCount = 0;
   let minutesDone = 0, minutesTotal = 0;
 
-  function rowHtml(sagaKey, item, mins, showBadge){
-    const id = sagaKey + ':' + slugify(item);
-    const isDone = !!state[id];
-    if(isDone) totalDone++;
+  // Renders a single movie or series row (plus, if a series is expanded, its nested seasons/episodes).
+  function rowHtml(sagaKey, entry, showBadge){
+    const info = entryInfo(sagaKey, entry);
+    if(info.done) totalDone++;
     totalCount++;
-    minutesTotal += mins;
-    if(isDone) minutesDone += mins;
-    const match = item.match(/^(.*)\s(\(.+\))$/);
-    const title = match ? match[1] : item;
+    minutesTotal += info.mins;
+    minutesDone += info.doneMins;
+
+    const match = info.title.match(/^(.*)\s(\(.+\))$/);
+    const titleText = match ? match[1] : info.title;
     const year = match ? match[2] : '';
     const badge = showBadge
       ? `<div class="saga-badge ${sagaKey}">${sagaKey === 'infinity' ? 'Infinity' : 'Multiverse'}</div>`
       : '';
-    return `<li class="item ${isDone ? 'done':''}" data-id="${id}">
+
+    if(!info.isSeries){
+      return `<li class="item ${info.done ? 'done':''}" data-toggle-id="${info.id}">
+          <div class="box">${checkSvg()}</div>
+          <div class="title">${titleText} <span class="year">${year}</span></div>
+          ${badge}
+          <div class="dur">${formatHours(info.mins)}</div>
+        </li>`;
+    }
+
+    // series row
+    const seriesExpanded = expandedSeries.has(info.id);
+    const progressText = `${info.doneEp}/${info.totalEp} eps`;
+    let seasonsHtml = '';
+    if(seriesExpanded){
+      seasonsHtml = entry.seasons.map(season => {
+        const seasonKey = info.id + ':s' + season.n;
+        const seasonDone = season.eps.filter(ep => state[episodeId(sagaKey, entry.title, season.n, ep.title)]).length;
+        const seasonAllDone = seasonDone === season.eps.length;
+        const seasonExpanded = expandedSeasons.has(seasonKey);
+        let episodesHtml = '';
+        if(seasonExpanded){
+          episodesHtml = season.eps.map(ep => {
+            const epId = episodeId(sagaKey, entry.title, season.n, ep.title);
+            const epDone = !!state[epId];
+            return `<li class="episode-row ${epDone ? 'done':''}" data-toggle-id="${epId}">
+                <div class="box box-sm">${checkSvgSmall()}</div>
+                <div class="title ep-title">${ep.title}</div>
+                <div class="dur">${formatHours(ep.mins)}</div>
+              </li>`;
+          }).join('');
+        }
+        return `<li class="season-row ${seasonAllDone ? 'done':''}" data-toggle-season="${sagaKey}|${slugify(entry.title)}|${season.n}">
+              <div class="box box-sm">${checkSvgSmall()}</div>
+              <div class="title">Season ${season.n}</div>
+              <button class="caret-btn-inline" data-expand-season="${seasonKey}" aria-label="Toggle episodes">${seasonExpanded ? '&#9662;' : '&#9656;'}</button>
+              <div class="count-mini">${seasonDone}/${season.eps.length}</div>
+            </li>
+          ${seasonExpanded ? `<ul class="episode-list">${episodesHtml}</ul>` : ''}`;
+      }).join('');
+    }
+
+    return `<li class="item series-row ${info.done ? 'done':''}" data-toggle-series="${sagaKey}|${slugify(entry.title)}">
         <div class="box">${checkSvg()}</div>
-        <div class="title">${title} <span class="year">${year}</span></div>
+        <div class="title">${titleText} <span class="year">${year}</span></div>
         ${badge}
-        <div class="dur">${formatHours(mins)}</div>
-      </li>`;
+        <div class="progress-pill">${progressText}</div>
+        <button class="caret-btn-inline" data-expand-series="${info.id}" aria-label="Toggle seasons">${seriesExpanded ? '&#9662;' : '&#9656;'}</button>
+        <div class="dur">${formatHours(info.mins)}</div>
+      </li>
+      ${seriesExpanded ? `<ul class="season-list">${seasonsHtml}</ul>` : ''}`;
   }
 
   if(currentOrder === 'chrono'){
@@ -261,12 +508,12 @@ function render(){
       sagaEl.className = 'saga';
 
       let doneCount = 0, sagaMinDone = 0, sagaMinTotal = 0;
-      const listHtml = saga.items.map(([item, mins]) => {
-        const before = totalDone, beforeMin = minutesDone;
-        const html = rowHtml(sagaKey, item, mins, false);
-        if(totalDone > before) doneCount++;
-        sagaMinTotal += mins;
-        if(totalDone > before) sagaMinDone += mins;
+      const listHtml = saga.items.map(entry => {
+        const beforeDone = totalDone, beforeMin = minutesDone, beforeTotal = minutesTotal;
+        const html = rowHtml(sagaKey, entry, false);
+        if(totalDone > beforeDone) doneCount++;
+        sagaMinTotal += (minutesTotal - beforeTotal);
+        sagaMinDone += (minutesDone - beforeMin);
         return html;
       }).join('');
 
@@ -283,14 +530,14 @@ function render(){
     // release date order: flatten across the selected saga(s) and sort by release rank
     const flat = [];
     sagasToShow.forEach(sagaKey => {
-      DATA[sagaKey].items.forEach(([item, mins, rel]) => {
-        flat.push({ sagaKey, item, mins, rel });
+      DATA[sagaKey].items.forEach(entry => {
+        flat.push({ sagaKey, entry, rel: entry.rel });
       });
     });
     flat.sort((a, b) => a.rel - b.rel);
 
     const showBadge = sagasToShow.length > 1;
-    const listHtml = flat.map(r => rowHtml(r.sagaKey, r.item, r.mins, showBadge)).join('');
+    const listHtml = flat.map(r => rowHtml(r.sagaKey, r.entry, showBadge)).join('');
 
     const sagaEl = document.createElement('div');
     sagaEl.className = 'saga';
@@ -312,12 +559,59 @@ function render(){
   document.getElementById('hoursDone').textContent = formatHours(minutesDone);
   document.getElementById('hoursLeft').textContent = formatHours(minutesTotal - minutesDone);
 
-  container.querySelectorAll('.item').forEach(li => {
+  // movie rows and episode rows: click toggles watched state directly
+  container.querySelectorAll('[data-toggle-id]').forEach(li => {
     li.addEventListener('click', () => {
-      const id = li.dataset.id;
+      const id = li.dataset.toggleId;
       state[id] = !state[id];
       render();
       saveState();
+    });
+  });
+
+  // series row main area: click toggles every episode in the whole series
+  container.querySelectorAll('[data-toggle-series]').forEach(el => {
+    el.addEventListener('click', () => {
+      const [sagaKey, slug] = el.dataset.toggleSeries.split('|');
+      const entry = DATA[sagaKey].items.find(it => it.type === 'series' && slugify(it.title) === slug);
+      if(!entry) return;
+      const info = entryInfo(sagaKey, entry);
+      setSeriesEpisodes(sagaKey, entry, !info.done);
+      render();
+      saveState();
+    });
+  });
+
+  // season row main area: click toggles every episode in that season
+  container.querySelectorAll('[data-toggle-season]').forEach(el => {
+    el.addEventListener('click', () => {
+      const [sagaKey, slug, seasonNumStr] = el.dataset.toggleSeason.split('|');
+      const seasonNum = parseInt(seasonNumStr, 10);
+      const entry = DATA[sagaKey].items.find(it => it.type === 'series' && slugify(it.title) === slug);
+      if(!entry) return;
+      const season = entry.seasons.find(s => s.n === seasonNum);
+      const allDone = season.eps.every(ep => state[episodeId(sagaKey, entry.title, seasonNum, ep.title)]);
+      setSeriesEpisodes(sagaKey, entry, !allDone, seasonNum);
+      render();
+      saveState();
+    });
+  });
+
+  // caret buttons: expand/collapse only, never toggle watched state
+  container.querySelectorAll('[data-expand-series]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const key = btn.dataset.expandSeries;
+      if(expandedSeries.has(key)) expandedSeries.delete(key); else expandedSeries.add(key);
+      render();
+    });
+  });
+  container.querySelectorAll('[data-expand-season]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const key = btn.dataset.expandSeason;
+      if(expandedSeasons.has(key)) expandedSeasons.delete(key); else expandedSeasons.add(key);
+      render();
     });
   });
 }
@@ -459,11 +753,11 @@ function currentSectionsForExport(){
   if(currentOrder === 'chrono'){
     return sagasToShow.map(k => ({
       label: DATA[k].label,
-      entries: DATA[k].items.map(([item, mins]) => ({ item, mins, sagaKey: k }))
+      entries: DATA[k].items.map(entry => ({ entry, sagaKey: k }))
     }));
   }
   const flat = [];
-  sagasToShow.forEach(k => DATA[k].items.forEach(([item, mins, rel]) => flat.push({ item, mins, rel, sagaKey: k })));
+  sagasToShow.forEach(k => DATA[k].items.forEach(entry => flat.push({ entry, rel: entry.rel, sagaKey: k })));
   flat.sort((a, b) => a.rel - b.rel);
   return [{ label: 'Release date order', entries: flat }];
 }
@@ -518,13 +812,13 @@ async function generateProgressImage(){
     let totalDone = 0, totalCount = 0, minutesDone = 0, minutesTotal = 0;
     const laidOut = sections.map(section => {
       let doneCount = 0, sMinDone = 0, sMinTotal = 0;
-      const cards = section.entries.map(({ item, mins, sagaKey }) => {
-        const id = sagaKey + ':' + slugify(item);
-        const done = !!state[id];
-        totalCount++; minutesTotal += mins;
-        if(done){ totalDone++; minutesDone += mins; doneCount++; sMinDone += mins; }
-        sMinTotal += mins;
-        return { item, mins, done, sagaKey };
+      const cards = section.entries.map(({ entry, sagaKey }) => {
+        const info = entryInfo(sagaKey, entry);
+        totalCount++; minutesTotal += info.mins; minutesDone += info.doneMins;
+        if(info.done){ totalDone++; doneCount++; }
+        sMinDone += info.doneMins;
+        sMinTotal += info.mins;
+        return { item: info.title, mins: info.mins, done: info.done, sagaKey };
       });
       const rows = Math.ceil(cards.length / cols);
       const sectionH = sectionHeaderH + rows * cellH + (rows - 1) * cellGap;
